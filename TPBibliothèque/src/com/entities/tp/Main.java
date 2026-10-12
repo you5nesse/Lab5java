@@ -1,50 +1,60 @@
+```java
 package com.entities.tp;
-
 
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) {
+
         Scanner sc = new Scanner(System.in);
 
         System.out.print("Capacité de la bibliothèque : ");
-        int n = sc.nextInt();
-        sc.nextLine();
+        int n = lireEntier(sc);
+
+        while (n <= 0) {
+            System.out.print("La capacité doit être positive : ");
+            n = lireEntier(sc);
+        }
 
         Bibliotheque b = new Bibliotheque(n);
 
         // Initialiser avec deux documents si possible
-        if (n > 0) {
-            b.ajouter(new Roman(
+        b.ajouter(new Roman(
                 "L'Etranger", "Albert Camus", 150, 80.0));
-        }
 
         if (n > 1) {
             b.ajouter(new Revue(
-                "Science et Vie", "Octobre", 2026));
+                    "Science et Vie", "Octobre", 2026));
         }
 
         int choix;
 
         do {
-            System.out.println("\n--- MENU ---");
+            System.out.println("\n========== MENU ==========");
             System.out.println("1. Ajouter un document");
             System.out.println("2. Afficher les documents");
             System.out.println("3. Supprimer un document");
             System.out.println("4. Rechercher par numéro");
             System.out.println("5. Afficher les auteurs");
             System.out.println("0. Quitter");
+            System.out.println("==========================");
             System.out.print("Votre choix : ");
 
-            choix = sc.nextInt();
-            sc.nextLine();
+            choix = lireEntier(sc);
 
             switch (choix) {
-                case 1:
-                    System.out.println("Type : 1-Livre, 2-Revue, "
-                            + "3-Dictionnaire, 4-Roman, 5-Manuel");
-                    int type = sc.nextInt();
-                    sc.nextLine();
+
+                case 1: {
+                    System.out.println("\nType de document :");
+                    System.out.println("1. Livre");
+                    System.out.println("2. Revue");
+                    System.out.println("3. Dictionnaire");
+                    System.out.println("4. Roman");
+                    System.out.println("5. Manuel");
+                    System.out.print("Votre type : ");
+
+                    int type = lireEntier(sc);
 
                     System.out.print("Titre : ");
                     String titre = sc.nextLine();
@@ -52,93 +62,114 @@ public class Main {
                     Document doc = null;
 
                     switch (type) {
-                        case 1:
+
+                        case 1: {
                             System.out.print("Auteur : ");
                             String auteur = sc.nextLine();
+
                             System.out.print("Nombre de pages : ");
-                            int pages = sc.nextInt();
-                            sc.nextLine();
+                            int pages = lireEntier(sc);
+
                             doc = new Livre(titre, auteur, pages);
                             break;
+                        }
 
-                        case 2:
+                        case 2: {
                             System.out.print("Mois : ");
                             String mois = sc.nextLine();
+
                             System.out.print("Année : ");
-                            int annee = sc.nextInt();
-                            sc.nextLine();
+                            int annee = lireEntier(sc);
+
                             doc = new Revue(titre, mois, annee);
                             break;
+                        }
 
-                        case 3:
+                        case 3: {
                             System.out.print("Langue : ");
                             String langue = sc.nextLine();
+
                             doc = new Dictionnaire(titre, langue);
                             break;
+                        }
 
-                        case 4:
+                        case 4: {
                             System.out.print("Auteur : ");
-                            String auteurRoman = sc.nextLine();
-                            System.out.print("Pages : ");
-                            int pagesRoman = sc.nextInt();
+                            String auteur = sc.nextLine();
+
+                            System.out.print("Nombre de pages : ");
+                            int pages = lireEntier(sc);
+
                             System.out.print("Prix : ");
-                            double prix = sc.nextDouble();
-                            sc.nextLine();
-                            doc = new Roman(titre, auteurRoman,
-                                    pagesRoman, prix);
-                            break;
+                            double prix = lireDouble(sc);
 
-                        case 5:
+                            doc = new Roman(
+                                    titre, auteur, pages, prix);
+                            break;
+                        }
+
+                        case 5: {
                             System.out.print("Auteur : ");
-                            String auteurManuel = sc.nextLine();
-                            System.out.print("Pages : ");
-                            int pagesManuel = sc.nextInt();
-                            sc.nextLine();
+                            String auteur = sc.nextLine();
+
+                            System.out.print("Nombre de pages : ");
+                            int pages = lireEntier(sc);
+
                             System.out.print("Niveau : ");
                             String niveau = sc.nextLine();
-                            doc = new Manuel(titre, auteurManuel,
-                                    pagesManuel, niveau);
+
+                            doc = new Manuel(
+                                    titre, auteur, pages, niveau);
                             break;
+                        }
 
                         default:
                             System.out.println("Type invalide.");
                     }
 
                     if (doc != null) {
-                        System.out.println(b.ajouter(doc)
-                                ? "Document ajouté."
-                                : "Échec : bibliothèque pleine.");
+                        if (b.ajouter(doc)) {
+                            System.out.println("Document ajouté avec succès.");
+                        } else {
+                            System.out.println(
+                                    "Échec : bibliothèque pleine.");
+                        }
                     }
                     break;
+                }
 
                 case 2:
                     b.afficherDocuments();
                     break;
 
-                case 3:
-                    System.out.print("Numéro du document : ");
-                    int numSupp = sc.nextInt();
-                    sc.nextLine();
+                case 3: {
+                    System.out.print("Numéro du document à supprimer : ");
+                    int numSupp = lireEntier(sc);
 
-                    Document aSupprimer = b.document(numSupp);
+                    Document docSupp = b.document(numSupp);
 
-                    if (aSupprimer != null
-                            && b.supprimer(aSupprimer)) {
+                    if (docSupp != null && b.supprimer(docSupp)) {
                         System.out.println("Document supprimé.");
                     } else {
                         System.out.println("Document introuvable.");
                     }
                     break;
+                }
 
-                case 4:
+                case 4: {
                     System.out.print("Numéro recherché : ");
-                    int num = sc.nextInt();
-                    sc.nextLine();
+                    int num = lireEntier(sc);
 
                     Document trouve = b.document(num);
-                    System.out.println(trouve != null
-                            ? trouve : "Document introuvable.");
+
+                    if (trouve != null) {
+                        System.out.println("Document trouvé :");
+                        System.out.println(trouve);
+                    } else {
+                        System.out.println("Document introuvable.");
+                    }
                     break;
+                }
 
                 case 5:
                     b.afficherAuteurs();
@@ -156,5 +187,31 @@ public class Main {
 
         sc.close();
     }
-}
 
+    // Lire un entier sans provoquer InputMismatchException
+    private static int lireEntier(Scanner sc) {
+        while (true) {
+            String saisie = sc.nextLine().trim();
+
+            try {
+                return Integer.parseInt(saisie);
+            } catch (NumberFormatException e) {
+                System.out.print("Veuillez saisir un entier valide : ");
+            }
+        }
+    }
+
+    // Lire un nombre décimal (accepte 12.5 ou 12,5)
+    private static double lireDouble(Scanner sc) {
+        while (true) {
+            String saisie = sc.nextLine().trim().replace(',', '.');
+
+            try {
+                return Double.parseDouble(saisie);
+            } catch (NumberFormatException e) {
+                System.out.print("Veuillez saisir un prix valide : ");
+            }
+        }
+    }
+}
+```
